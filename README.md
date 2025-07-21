@@ -1,11 +1,11 @@
 
-
 # Simple E-commerce API ✨
 
 Welcome to the **Simple E-commerce API**, a robust RESTful API built with **Spring Boot**, **Spring Security**, and **MySQL**. This project powers an e-commerce platform with features like product listings, cart management, order creation, and role-based authentication (Customer and Admin) using **JWT (JSON Web Tokens)**. It also includes optional features like pagination and product search.
 
 ![E-commerce Store Header](https://via.placeholder.com/800x200?text=E-commerce+Store+Header)  
-*[(Note: Placeholder image; replace with your actual header image)](https://drive.google.com/file/d/1lPgsWkzX0BdJwWkpghC4uLn2dZkjyxpW/view?usp=drive_link)*
+*<img width="1900" height="916" alt="Screenshot 2025-07-21 231801" src="https://github.com/user-attachments/assets/c1b0c91b-bcbf-4f8f-92d5-181542090faa" />
+*
 
 ## Table of Contents 🎯
 - [Features](#features-)
