@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce Store</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+        }
+        .auth-section {
+            display: flex;
+            gap: 10px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .product-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: white;
+        }
+        .product-card img {
+            max-width: 100%;
+            height: auto;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input, select {
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .hidden {
+            display: none;
+        }
+        .admin-section {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <h1>E-commerce Store</h1>
+        <nav>
+            <ul>
+                <li><a href="#" id="nav-products">Products</a></li>
+                <li><a href="#" id="nav-cart">Cart</a></li>
+                <li><a href="#" id="nav-orders">Orders</a></li>
+                <li class="hidden" id="nav-admin"><a href="#" id="nav-admin-products">Admin Products</a></li>
+            </ul>
+        </nav>
+        <div class="auth-section">
+            <button id="btn-login">Login</button>
+            <button id="btn-register">Register</button>
+            <span id="user-info" class="hidden"></span>
+            <button id="btn-logout" class="hidden">Logout</button>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <!-- Login Form -->
+    <div id="login-section" class="card hidden">
+        <h2>Login</h2>
+        <div class="form-group">
+            <label for="login-username">Username:</label>
+            <input type="text" id="login-username" required>
+        </div>
+        <div class="form-group">
+            <label for="login-password">Password:</label>
+            <input type="password" id="login-password" required>
+        </div>
+        <button id="btn-submit-login">Login</button>
+        <p id="login-error" style="color: red;"></p>
+    </div>
+
+    <!-- Register Form -->
+    <div id="register-section" class="card hidden">
+        <h2>Register</h2>
+        <div class="form-group">
+            <label for="register-username">Username:</label>
+            <input type="text" id="register-username" required>
+        </div>
+        <div class="form-group">
+            <label for="register-password">Password:</label>
+            <input type="password" id="register-password" required>
+        </div>
+        <div class="form-group">
+            <label for="register-email">Email:</label>
+            <input type="email" id="register-email" required>
+        </div>
+        <button id="btn-submit-register">Register</button>
+        <p id="register-error" style="color: red;"></p>
+    </div>
+
+    <!-- Products Section -->
+    <div id="products-section" class="card">
+        <h2>Products</h2>
+        <div class="form-group">
+            <input type="text" id="search-products" placeholder="Search products...">
+            <button id="btn-search">Search</button>
+            <button id="btn-clear-search">Clear</button>
+        </div>
+        <div class="products-grid" id="products-list"></div>
+        <div class="pagination" id="products-pagination"></div>
+    </div>
+
+    <!-- Cart Section -->
+    <div id="cart-section" class="card hidden">
+        <h2>Your Cart</h2>
+        <div id="cart-items"></div>
+        <div id="cart-total" style="text-align: right; font-weight: bold; margin-top: 20px;"></div>
+        <button id="btn-checkout" style="margin-top: 20px;">Checkout</button>
+        <button id="btn-clear-cart" style="margin-top: 20px; background-color: #f44336;">Clear Cart</button>
+    </div>
+
+    <!-- Orders Section -->
+    <div id="orders-section" class="card hidden">
+        <h2>Your Orders</h2>
+        <div id="orders-list"></div>
+    </div>
+
+    <!-- Admin Products Section -->
+    <div id="admin-products-section" class="card hidden">
+        <h2>Manage Products</h2>
+        <div class="admin-section">
+            <h3>Add New Product</h3>
+            <div class="form-group">
+                <label for="product-name">Name:</label>
+                <input type="text" id="product-name" required>
+            </div>
+            <div class="form-group">
+                <label for="product-description">Description:</label>
+                <textarea id="product-description" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="product-price">Price:</label>
+                <input type="number" id="product-price" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="product-stock">Stock Quantity:</label>
+                <input type="number" id="product-stock" required>
+            </div>
+            <div class="form-group">
+                <label for="product-category">Category:</label>
+                <input type="text" id="product-category" required>
+            </div>
+            <button id="btn-add-product">Add Product</button>
+        </div>
+
+        <h3>Product List</h3>
+        <div id="admin-products-list" class="products-grid"></div>
+    </div>
+</div>
+
+<script>
+    // Global variables
+    let currentUser = null;
+    let token = localStorage.getItem('token');
+    let currentPage = 1;
+    const itemsPerPage = 8;
+
+    // DOM elements
+    const elements = {
+        // Navigation
+        navProducts: document.getElementById('nav-products'),
+        navCart: document.getElementById('nav-cart'),
+        navOrders: document.getElementById('nav-orders'),
+        navAdmin: document.getElementById('nav-admin'),
+        navAdminProducts: document.getElementById('nav-admin-products'),
+
+        // Auth
+        btnLogin: document.getElementById('btn-login'),
+        btnRegister: document.getElementById('btn-register'),
+        btnLogout: document.getElementById('btn-logout'),
+        userInfo: document.getElementById('user-info'),
+
+        // Login
+        loginSection: document.getElementById('login-section'),
+        loginUsername: document.getElementById('login-username'),
+        loginPassword: document.getElementById('login-password'),
+        btnSubmitLogin: document.getElementById('btn-submit-login'),
+        loginError: document.getElementById('login-error'),
+
+        // Register
+        registerSection: document.getElementById('register-section'),
+        registerUsername: document.getElementById('register-username'),
+        registerPassword: document.getElementById('register-password'),
+        registerEmail: document.getElementById('register-email'),
+        btnSubmitRegister: document.getElementById('btn-submit-register'),
+        registerError: document.getElementById('register-error'),
+
+        // Products
+        productsSection: document.getElementById('products-section'),
+        productsList: document.getElementById('products-list'),
+        searchProducts: document.getElementById('search-products'),
+        btnSearch: document.getElementById('btn-search'),
+        btnClearSearch: document.getElementById('btn-clear-search'),
+        productsPagination: document.getElementById('products-pagination'),
+
+        // Cart
+        cartSection: document.getElementById('cart-section'),
+        cartItems: document.getElementById('cart-items'),
+        cartTotal: document.getElementById('cart-total'),
+        btnCheckout: document.getElementById('btn-checkout'),
+        btnClearCart: document.getElementById('btn-clear-cart'),
+
+        // Orders
+        ordersSection: document.getElementById('orders-section'),
+        ordersList: document.getElementById('orders-list'),
+
+        // Admin
+        adminProductsSection: document.getElementById('admin-products-section'),
+        adminProductsList: document.getElementById('admin-products-list'),
+        productName: document.getElementById('product-name'),
+        productDescription: document.getElementById('product-description'),
+        productPrice: document.getElementById('product-price'),
+        productStock: document.getElementById('product-stock'),
+        productCategory: document.getElementById('product-category'),
+        btnAddProduct: document.getElementById('btn-add-product')
+    };
+
+    // Event Listeners
+    elements.btnLogin.addEventListener('click', showLogin);
+    elements.btnRegister.addEventListener('click', showRegister);
+    elements.btnLogout.addEventListener('click', logout);
+    elements.btnSubmitLogin.addEventListener('click', login);
+    elements.btnSubmitRegister.addEventListener('click', register);
+
+    elements.navProducts.addEventListener('click', (e) => {
+        e.preventDefault();
+        showProducts();
+    });
+    elements.navCart.addEventListener('click', (e) => {
+        e.preventDefault();
+        showCart();
+    });
+    elements.navOrders.addEventListener('click', (e) => {
+        e.preventDefault();
+        showOrders();
+    });
+    elements.navAdminProducts.addEventListener('click', (e) => {
+        e.preventDefault();
+        showAdminProducts();
+    });
+
+    elements.btnSearch.addEventListener('click', searchProducts);
+    elements.btnClearSearch.addEventListener('click', clearSearch);
+    elements.btnCheckout.addEventListener('click', checkout);
+    elements.btnClearCart.addEventListener('click', clearCart);
+    elements.btnAddProduct.addEventListener('click', addProduct);
+
+    // Initialize
+    if (token) {
+        fetchCurrentUser();
+    } else {
+        showProducts();
+    }
+
+    // Functions
+    function showSection(section) {
+        // Hide all sections
+        document.querySelectorAll('.card').forEach(el => el.classList.add('hidden'));
+
+        // Show the requested section
+        section.classList.remove('hidden');
+    }
+
+    function showLogin() {
+        showSection(elements.loginSection);
+        elements.registerSection.classList.add('hidden');
+    }
+
+    function showRegister() {
+        showSection(elements.registerSection);
+        elements.loginSection.classList.add('hidden');
+    }
+
+    function showProducts() {
+        showSection(elements.productsSection);
+        loadProducts();
+    }
+
+    function showCart() {
+        if (!currentUser) {
+            showLogin();
+            return;
+        }
+        showSection(elements.cartSection);
+        loadCart();
+    }
+
+    function showOrders() {
+        if (!currentUser) {
+            showLogin();
+            return;
+        }
+        showSection(elements.ordersSection);
+        loadOrders();
+    }
+
+    function showAdminProducts() {
+        if (!currentUser || currentUser.role !== 'ADMIN') {
+            showProducts();
+            return;
+        }
+        showSection(elements.adminProductsSection);
+        loadAdminProducts();
+    }
+
+    async function fetchCurrentUser() {
+    try {
+        const response = await fetch('http://localhost:8080/api/auth/me', {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include' // Important for session/cookie based auth
+        });
+
+        if (response.status === 401) {
+            // Token expired or invalid
+            logout();
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const userData = await response.json();
+        currentUser = userData;
+        updateUIAfterLogin();
+    } catch (error) {
+        console.error("Fetch user failed:", error);
+        logout();
+    }
+}
+
+    async function login() {
+        const username = elements.loginUsername.value;
+        const password = elements.loginPassword.value;
+
+        try {
+            const response = await fetch('http://localhost:8080/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Login failed');
+            }
+
+            const data = await response.json();
+            token = data.token;
+            localStorage.setItem('token', token);
+
+            // Fetch user details
+            await fetchCurrentUser();
+
+            elements.loginError.textContent = '';
+            elements.loginUsername.value = '';
+            elements.loginPassword.value = '';
+
+        } catch (error) {
+            elements.loginError.textContent = error.message;
+        }
+    }
+
+    async function register() {
+        const username = elements.registerUsername.value;
+        const password = elements.registerPassword.value;
+        const email = elements.registerEmail.value;
+
+        try {
+            const response = await fetch('http://localhost:8080/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password, email, role: 'CUSTOMER' })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Registration failed');
+            }
+
+            // Automatically login after registration
+            await login();
+
+            elements.registerError.textContent = '';
+            elements.registerUsername.value = '';
+            elements.registerPassword.value = '';
+            elements.registerEmail.value = '';
+
+        } catch (error) {
+            elements.registerError.textContent = error.message;
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem('token');
+        token = null;
+        currentUser = null;
+
+        // Update UI
+        elements.btnLogin.classList.remove('hidden');
+        elements.btnRegister.classList.remove('hidden');
+        elements.btnLogout.classList.add('hidden');
+        elements.userInfo.classList.add('hidden');
+        elements.navAdmin.classList.add('hidden');
+
+        showProducts();
+    }
+
+    function updateUIAfterLogin() {
+        elements.btnLogin.classList.add('hidden');
+        elements.btnRegister.classList.add('hidden');
+        elements.btnLogout.classList.remove('hidden');
+        elements.userInfo.classList.remove('hidden');
+        elements.userInfo.textContent = `Welcome, ${currentUser.username} (${currentUser.role})`;
+
+        if (currentUser.role === 'ADMIN') {
+            elements.navAdmin.classList.remove('hidden');
+        } else {
+            elements.navAdmin.classList.add('hidden');
+        }
+
+        elements.loginSection.classList.add('hidden');
+        elements.registerSection.classList.add('hidden');
+    }
+
+    async function loadProducts(page = 1) {
+        try {
+            let url = `http://localhost:8080/api/products/page?page=${page - 1}&size=${itemsPerPage}`;
+        const searchTerm = elements.searchProducts.value.trim();
+
+        if (searchTerm) {
+            url = `http://localhost:8080/api/products/search?name=${encodeURIComponent(searchTerm)}`;
+        }
+
+        const response = await fetch(url, {
+            headers: token ? {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            } : {}
+        });
+
+            if (!response.ok) {
+                throw new Error('Failed to load products');
+            }
+
+            let products, totalPages;
+
+            if (searchTerm) {
+                products = await response.json();
+                totalPages = 1; // No pagination for search results
+            } else {
+                const data = await response.json();
+                products = data.content;
+                totalPages = data.totalPages;
+            }
+
+            renderProducts(products);
+            renderPagination(page, totalPages);
+
+        } catch (error) {
+            console.error('Error loading products:', error);
+            elements.productsList.innerHTML = '<p>Error loading products. Please try again.</p>';
+        }
+    }
+
+    function renderProducts(products) {
+        if (products.length === 0) {
+            elements.productsList.innerHTML = '<p>No products found.</p>';
+            return;
+        }
+
+        elements.productsList.innerHTML = products.map(product => `
+            <div class="product-card">
+                <h3>${product.name}</h3>
+                <p>${product.description}</p>
+                <p>Price: $${product.price.toFixed(2)}</p>
+                <p>Stock: ${product.stockQuantity}</p>
+                <p>Category: ${product.category}</p>
+                ${currentUser ? `
+                    <div class="form-group">
+                        <input type="number" id="quantity-${product.id}" value="1" min="1" max="${product.stockQuantity}">
+                        <button onclick="addToCart(${product.id})">Add to Cart</button>
+                    </div>
+                ` : '<p>Please login to add to cart</p>'}
+            </div>
+        `).join('');
+    }
+
+    function renderPagination(currentPage, totalPages) {
+        if (totalPages <= 1) {
+            elements.productsPagination.innerHTML = '';
+            return;
+        }
+
+        let paginationHTML = '';
+
+        if (currentPage > 1) {
+            paginationHTML += `<button onclick="changePage(${currentPage - 1})">Previous</button>`;
+        }
+
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === currentPage) {
+                paginationHTML += `<button disabled>${i}</button>`;
+            } else {
+                paginationHTML += `<button onclick="changePage(${i})">${i}</button>`;
+            }
+        }
+
+        if (currentPage < totalPages) {
+            paginationHTML += `<button onclick="changePage(${currentPage + 1})">Next</button>`;
+        }
+
+        elements.productsPagination.innerHTML = paginationHTML;
+    }
+
+    function changePage(page) {
+        currentPage = page;
+        loadProducts(page);
+    }
+
+    function searchProducts() {
+        loadProducts(1);
+    }
+
+    function clearSearch() {
+        elements.searchProducts.value = '';
+        loadProducts(1);
+    }
+
+    async function addToCart(productId) {
+        if (!currentUser) {
+            showLogin();
+            return;
+        }
+
+        const quantity = parseInt(document.getElementById(`quantity-${productId}`).value);
+
+        try {
+            const response = await fetch('http://localhost:8080/api/cart/items', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    productId,
+                    quantity
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to add to cart');
+            }
+
+            alert('Product added to cart!');
+            loadCart();
+
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+            alert('Error adding to cart: ' + error.message);
+        }
+    }
+
+    async function loadCart() {
+        try {
+            const response = await fetch('http://localhost:8080/api/cart', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to load cart');
+            }
+
+            const cart = await response.json();
+            renderCart(cart);
+
+        } catch (error) {
+            console.error('Error loading cart:', error);
+            elements.cartItems.innerHTML = '<p>Error loading cart. Please try again.</p>';
+        }
+    }
+
+    function renderCart(cart) {
+        if (!cart.items || cart.items.length === 0) {
+            elements.cartItems.innerHTML = '<p>Your cart is empty.</p>';
+            elements.cartTotal.textContent = '';
+            return;
+        }
+
+        elements.cartItems.innerHTML = cart.items.map(item => `
+            <div class="cart-item">
+                <div>
+                    <h4>${item.product.name}</h4>
+                    <p>$${item.product.price.toFixed(2)} x ${item.quantity}</p>
+                </div>
+                <div>
+                    <input type="number" id="update-${item.id}" value="${item.quantity}" min="1">
+                    <button onclick="updateCartItem(${item.id})">Update</button>
+                    <button onclick="removeCartItem(${item.id})" style="background-color: #f44336;">Remove</button>
+                </div>
+            </div>
+        `).join('');
+
+        elements.cartTotal.textContent = `Total: $${cart.totalPrice.toFixed(2)}`;
+    }
+
+    async function updateCartItem(itemId) {
+        const quantity = parseInt(document.getElementById(`update-${itemId}`).value);
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/cart/items/${itemId}?quantity=${quantity}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update cart item');
+            }
+
+            loadCart();
+
+        } catch (error) {
+            console.error('Error updating cart item:', error);
+            alert('Error updating cart item: ' + error.message);
+        }
+    }
+
+    async function removeCartItem(itemId) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/cart/items/${itemId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to remove cart item');
+            }
+
+            loadCart();
+
+        } catch (error) {
+            console.error('Error removing cart item:', error);
+            alert('Error removing cart item: ' + error.message);
+        }
+    }
+
+    async function clearCart() {
+        if (!confirm('Are you sure you want to clear your cart?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:8080/api/cart', {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to clear cart');
+            }
+
+            loadCart();
+
+        } catch (error) {
+            console.error('Error clearing cart:', error);
+            alert('Error clearing cart: ' + error.message);
+        }
+    }
+
+    async function checkout() {
+        try {
+            const response = await fetch('http://localhost:8080/api/orders', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create order');
+            }
+
+            const order = await response.json();
+            alert(`Order #${order.id} created successfully!`);
+            loadOrders();
+            showOrders();
+
+        } catch (error) {
+            console.error('Error creating order:', error);
+            alert('Error creating order: ' + error.message);
+        }
+    }
+
+    async function loadOrders() {
+        try {
+            const response = await fetch('http://localhost:8080/api/orders', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to load orders');
+            }
+
+            const orders = await response.json();
+            renderOrders(orders);
+
+        } catch (error) {
+            console.error('Error loading orders:', error);
+            elements.ordersList.innerHTML = '<p>Error loading orders. Please try again.</p>';
+        }
+    }
+
+    function renderOrders(orders) {
+        if (orders.length === 0) {
+            elements.ordersList.innerHTML = '<p>You have no orders yet.</p>';
+            return;
+        }
+
+        elements.ordersList.innerHTML = orders.map(order => `
+            <div class="card" style="margin-bottom: 15px;">
+                <h3>Order #${order.id}</h3>
+                <p>Date: ${new Date(order.orderDate).toLocaleString()}</p>
+                <p>Status: ${order.status}</p>
+                <p>Total: $${order.totalAmount.toFixed(2)}</p>
+                <h4>Items:</h4>
+                <ul>
+                    ${order.items.map(item => `
+                        <li>${item.product.name} - $${item.price.toFixed(2)} x ${item.quantity}</li>
+                    `).join('')}
+                </ul>
+            </div>
+        `).join('');
+    }
+
+    async function loadAdminProducts() {
+        try {
+            const response = await fetch('http://localhost:8080/api/products', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to load products');
+            }
+
+            const products = await response.json();
+            renderAdminProducts(products);
+
+        } catch (error) {
+            console.error('Error loading products:', error);
+            elements.adminProductsList.innerHTML = '<p>Error loading products. Please try again.</p>';
+        }
+    }
+
+    function renderAdminProducts(products) {
+        if (products.length === 0) {
+            elements.adminProductsList.innerHTML = '<p>No products found.</p>';
+            return;
+        }
+
+        elements.adminProductsList.innerHTML = products.map(product => `
+            <div class="product-card">
+                <h3>${product.name}</h3>
+                <p>${product.description}</p>
+                <p>Price: $${product.price.toFixed(2)}</p>
+                <p>Stock: ${product.stockQuantity}</p>
+                <p>Category: ${product.category}</p>
+                <div style="margin-top: 10px;">
+                    <button onclick="editProduct(${product.id})" style="background-color: #2196F3;">Edit</button>
+                    <button onclick="deleteProduct(${product.id})" style="background-color: #f44336;">Delete</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function addProduct() {
+        const product = {
+            name: elements.productName.value,
+            description: elements.productDescription.value,
+            price: parseFloat(elements.productPrice.value),
+            stockQuantity: parseInt(elements.productStock.value),
+            category: elements.productCategory.value
+        };
+
+        try {
+            const response = await fetch('http://localhost:8080/api/products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(product)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to add product');
+            }
+
+            const newProduct = await response.json();
+            alert(`Product "${newProduct.name}" added successfully!`);
+
+            // Clear form
+            elements.productName.value = '';
+            elements.productDescription.value = '';
+            elements.productPrice.value = '';
+            elements.productStock.value = '';
+            elements.productCategory.value = '';
+
+            // Refresh list
+            loadAdminProducts();
+
+        } catch (error) {
+            console.error('Error adding product:', error);
+            alert('Error adding product: ' + error.message);
+        }
+    }
+
+    function editProduct(productId) {
+        // In a real app, you would implement a proper edit form
+        alert('Edit functionality not implemented in this demo. Product ID: ' + productId);
+    }
+
+    async function deleteProduct(productId) {
+        if (!confirm('Are you sure you want to delete this product?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/products/${productId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete product');
+            }
+
+            alert('Product deleted successfully!');
+            loadAdminProducts();
+
+        } catch (error) {
+            console.error('Error deleting product:', error);
+            alert('Error deleting product: ' + error.message);
+        }
+    }
+
+    // Make functions available globally for button clicks
+    window.addToCart = addToCart;
+    window.updateCartItem = updateCartItem;
+    window.removeCartItem = removeCartItem;
+    window.changePage = changePage;
+    window.editProduct = editProduct;
+    window.deleteProduct = deleteProduct;
+</script>
+</body>
+</html>
