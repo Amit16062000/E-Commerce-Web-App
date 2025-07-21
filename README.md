@@ -89,6 +89,9 @@ Welcome to the **Simple E-commerce API**, a robust RESTful API built with **Spri
 | POST   | `/api/auth/register`| Register a new user            | None          | `User` (username, password, email, role) |
 | POST   | `/api/auth/login`  | Login and get JWT token        | None          | `AuthRequest` (username, password) |
 
+<img width="1728" height="897" alt="Screenshot 2025-07-21 232245" src="https://github.com/user-attachments/assets/23c90db9-68d5-4b54-8c1d-6dff7e3301d9" />
+
+
 **Example Login**:
 ```bash
 curl -X POST http://localhost:8080/api/auth/login \
@@ -119,6 +122,9 @@ curl -X POST http://localhost:8080/api/auth/login \
 ```bash
 curl -X GET http://localhost:8080/api/products/search?name=laptop
 ```
+
+<img width="1736" height="931" alt="Screenshot 2025-07-21 232137" src="https://github.com/user-attachments/assets/a68cfbc4-a3ad-4e2a-aca2-3d26bf6a6342" />
+
 
 ### Cart 🛍️
 | Method | Endpoint                  | Description                     | Required Role | Request Body/Params            |
@@ -181,18 +187,22 @@ Product * <---- OrderItem
 Explore the user interface and API testing in action:
 
 1. **Registration Page**  
-   ![Register Page](https://drive.google.com/file/d/1mOVyvSs5C6Hua6lk478sf45Mm9qlV3D5/view?usp=drive_link)  
+   ![Register Page]()  
    *A simple registration form for new users with fields for username, password, and email.*
+   <img width="1916" height="896" alt="Screenshot 2025-07-21 231912" src="https://github.com/user-attachments/assets/d30c4926-ad3d-45ff-ba74-95b23dedd705" />
 
-2. **Products Page**  
+
+3. **Products Page**  
    ![Products Page]([attachment://products_page.png](https://drive.google.com/file/d/1lPgsWkzX0BdJwWkpghC4uLn2dZkjyxpW/view?usp=drive_link))  
    *Displays available products (Laptop, Wireless Headphones, Coffee Maker, Running Shoes) with details and a search option.*
 
-3. **Login Page**  
+4. **Login Page**  
    ![Login Page](https://drive.google.com/file/d/1RV7jngaf3al-cIrBkZKIYQJ83agQhnFZ/view?usp=drive_link)  
    *Login form with username and password fields, showing an error for invalid credentials.*
+   <img width="1907" height="917" alt="Screenshot 2025-07-21 232013" src="https://github.com/user-attachments/assets/af24d42d-0b00-4659-8144-e4906586aa0e" />
 
-4. **API Testing with Postman**  
+
+6. **API Testing with Postman**  
    - **Login Request**: ![Login Postman](attachment://login_postman.png)  
      *Testing the `/api/auth/login` endpoint to get a JWT token.*
    - **Add Product by Admin**: ![Add Product Postman]([attachment://add_product_postman.png](https://drive.google.com/file/d/1QKIrF8gpT-piNmjPLVtor7BLlhzZS0bX/view?usp=drive_link))  
