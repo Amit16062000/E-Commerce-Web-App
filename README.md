@@ -1,6 +1,4 @@
-Below is an enhanced and attractive version of the `README.md` file for your Simple E-commerce API project, incorporating the provided images and explaining their usage. The documentation is formatted in Markdown with visual enhancements, headings, and a professional layout to make it engaging and informative.
 
----
 
 # Simple E-commerce API ✨
 
